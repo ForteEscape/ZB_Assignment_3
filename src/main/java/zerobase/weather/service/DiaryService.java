@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 import zerobase.weather.domain.Diary;
 import zerobase.weather.repository.DiaryRepository;
 
-import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -94,5 +94,24 @@ public class DiaryService {
         } catch (Exception e){
             return "Failed to get response";
         }
+    }
+
+    public List<Diary> readDiary(LocalDate date) {
+        return diaryRepository.findAllByDate(date);
+    }
+
+    public List<Diary> readDiaries(LocalDate startDate, LocalDate endDate) {
+        return diaryRepository.findAllByDateBetween(startDate, endDate);
+    }
+
+    public void updateDiary(LocalDate date, String text) {
+        Diary currentDiary = diaryRepository.getFirstByDate(date);
+        currentDiary.setText(text);
+
+        diaryRepository.save(currentDiary);
+    }
+
+    public void deleteDiary(LocalDate date) {
+        diaryRepository.deleteAllByDate(date);
     }
 }
